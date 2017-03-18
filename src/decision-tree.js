@@ -1,4 +1,3 @@
-'use strict';
 class DecisionTree {
   constructor(questions) {
     this.currentIndex = 0;
@@ -18,5 +17,4 @@ class DecisionTree {
   }
 }
 
-//export default DecisionTree;
-module.exports = DecisionTree;
+export default DecisionTree;

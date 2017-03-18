@@ -1,4 +1,3 @@
-'use strict';
 class Question {
   constructor(config) {
     this.name = config.name;
@@ -17,5 +16,4 @@ class Question {
   }
 }
 
-//export default Question;
-module.exports = Question;
+export default Question;

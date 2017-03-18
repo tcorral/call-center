@@ -1,7 +1,5 @@
-//import prompt from 'prompt';
-'use strict';
-
-var prompt = require('prompt-sync')();
+import promptSync from 'prompt-sync';
+const prompt = promptSync();
 
 class Employee {
   constructor(name, surname, manager) {
@@ -25,6 +23,7 @@ class Employee {
   handleCall(call) {
     this.call = call || this.department.getNextCall(this);
     if (this.call) {
+      console.log(`${this.fullname} is attending phone call: ${this.call.phone}`);
       this.call.addAgent(this);
       this.free = false;
     } else {
@@ -40,7 +39,6 @@ class Employee {
 
     question = decisionTree.getNextQuestion();
 
-    console.log(this.name);
     while(question) {
       answer = prompt(question.message);
       if (question.shouldBeRedirected(answer)) {
@@ -53,7 +51,7 @@ class Employee {
         question = decisionTree.getNextQuestion();
       }
     }
-    this.call.resolve();
+    this.resolveCall();
   }
 
   startWorkingDay() {
@@ -70,6 +68,17 @@ class Employee {
     this.manager = manager;
   }
 
+  resolveCall() {
+    console.log(`Phone call: ${this.call.phone} has been resolved by ${this.fullname}`);
+    this.call.resolve();
+  }
+
+  rejectCall() {
+    console.log(`Phone call: ${this.call.phone} has been rejected by ${this.fullname}`);
+    this.call.reject();
+    this.free = true;
+  }
+
   scalateCall() {
     this.department.scalateCall(this);
   }
@@ -79,6 +88,4 @@ class Employee {
   }
 }
 
-//export default Employee;
-module
-  .exports = Employee;
+export default Employee;

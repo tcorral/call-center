@@ -1,6 +1,4 @@
-//import DecisionTree from './decision-tree';
-'use strict';
-const DecisionTree = require('./decision-tree');
+import DecisionTree from './decision-tree';
 
 class Department {
   constructor(name, id) {
@@ -17,7 +15,6 @@ class Department {
   getDepartments() { /*Dummy method, it will be added by call center on register it*/ }
 
   registerEmployee(employee) {
-    console.log('Employee ' + employee.fullname + ' has been registered in '  + this.name);
     this.employees.push(employee);
     employee.department = this;
   }
@@ -26,17 +23,13 @@ class Department {
     var self = this;
     extraDelayer = extraDelayer || 1;
     setTimeout(function recursive() {
-      console.log('Looking for a free agent');
       let agent = manager || self.getNextFreeAgent();
       if(agent) {
-        console.log('Free agent found ' + agent.fullname);
         agent.handleCall();
       } else {
         if(this.maxRecursionTimes === extraDelayer) {
-          console.log('Max. recursion times');
-          agent.call.reject();
+          agent.rejectCall();
         } else {
-          console.log('Waiting ' + (self.delayCheckFreeAgentCheck * extraDelayer));
           setTimeout(recursive, (self.delayCheckFreeAgentCheck * ++extraDelayer));
         }
       }
@@ -44,11 +37,9 @@ class Department {
   }
 
   getNextFreeAgent() {
-    console.log('Getting a new free agent');
     for(let i = 0, agentsLength = this.agents.length; i < agentsLength; i++) {
       let agent = this.agents[i];
       if(agent.isFree() && agent.employees.length === 0) {
-        console.log('Free agent: ' + agent.fullname);
         return agent;
       }
     }
@@ -56,18 +47,17 @@ class Department {
   }
 
   scalateCall(agent) {
-    console.log('Escalating call attended by ' + agent.fullname );
+    console.log(`Scalating call to ${agent.fullname}'s manager ${agent.manager.fullname}`);
     if (this.agents.indexOf(agent) > -1
       && this.agents.indexOf(agent.manager) > -1
       && agent.manager.isFree()) {
-      console.log(agent.manager.fullname + ' is going to handle the call');
+      agent.rejectCall();
       agent.manager.handleCall(agent.call);
     } else if(agent.manager) {
-      console.log('Manager is busy');
       this.checkFreeAgentCheck(agent.manager);
+      agent.rejectCall();
     } else {
-      console.log('Call ' + agent.call.phone + ' has been rejected by ' + agent.fullname);
-      agent.call.reject();
+      agent.rejectCall();
     }
   }
 
@@ -75,18 +65,16 @@ class Department {
     const department = this.getDepartmentsInCallCenter().find((item) => {
       return item.id === departmentId;
     });
-    console.log('Redirect is required. Current department ' + this.name + '; Next department: ' +  department.name);
+    console.log(`Redirecting call from department ${this.name} to ${department.name}`);
     if(!department) {
-      console.log(agent.fullname + ' has rejected the call');
-      agent.call.reject();
+      agent.rejectCall();
     } else{
-      console.log('Looking for a new free agent');
+      agent.rejectCall();
+      this.decisionTree.reset();
       const newAgent = department.getNextFreeAgent();
       if(!newAgent) {
-        console.log('All the agents are busy');
         department.checkFreeAgentCheck();
       }else {
-        console.log(newAgent.fullname + ' handles the call');
         newAgent.handleCall(agent.call);
       }
     }
@@ -133,5 +121,4 @@ class Department {
   }
 }
 
-//export default Department;
-module.exports = Department;
+export default Department;

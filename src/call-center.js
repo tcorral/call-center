@@ -1,7 +1,4 @@
-//import Department from './department';
-'use strict';
-
-const Department = require('./department');
+import Department from './department';
 
 class CallCenter {
   constructor(){
@@ -14,12 +11,10 @@ class CallCenter {
   }
 
   addCall(call) {
-    console.log('Adding call ' + call.phone);
     this.departments[0].addCall(call);
   }
 
   addDepartment(department) {
-    console.log('Adding department ' + department.name);
     this.departments.push(department);
     department.getDepartmentsInCallCenter = () => {
       return this.getDepartments().filter(function (item) {
@@ -33,5 +28,4 @@ class CallCenter {
   }
 }
 
-//export default CallCenter;
-module.exports = CallCenter;
+export default CallCenter;
